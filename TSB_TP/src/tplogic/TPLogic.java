@@ -112,7 +112,8 @@ public class TPLogic {
          * palabra si la encuentra, sino retorna un valor default
          * que aca se seteo en 0, que vendira a ser cero apariciones.
          */
-        return hashtable.getOrDefault(word, 0);
+        String wordToSearch = FileParser.cleanString(word);
+        return hashtable.getOrDefault(wordToSearch, 0);
     }
 
     /**

@@ -32,7 +32,8 @@ public class FileParser implements Iterable<String>, Closeable {
     Scanner sc;
 
     /**
-     * Contructor con path tipo string. 
+     * Contructor con path tipo string.
+     *
      * @param path - path del archivo a leer.
      * @throws FileNotFoundException - si no encuentra el archivo.
      * @throws NullPointerException - si path es null.
@@ -43,65 +44,40 @@ public class FileParser implements Iterable<String>, Closeable {
         // ([a-z]+[0-9]+|[0-9]+[a-z]+)[a-z0-9]*\b|[^A-Za-z]+
         //sc.skip("[^A-Za-z]+");
     }
-    
+
     /**
-     * Constructor con archivo tipo File. 
-     * @param file - el archivo. 
-     * @throws FileNotFoundException - si no encuentra el archivo. 
+     * Constructor con archivo tipo File.
+     *
+     * @param file - el archivo.
+     * @throws FileNotFoundException - si no encuentra el archivo.
      */
     public FileParser(File file) throws FileNotFoundException {
         sc = new Scanner(file, "ISO-8859-1");
 
     }
-    
+
     /**
      * "Iterador" del archivo.
-     * @return - una instancia del iterador. 
+     *
+     * @return - una instancia del iterador.
      */
     @Override
     public Iterator<String> iterator() {
         return new FileIterator();
     }
-    
+
     /**
-     * Cierra el scanner para liberar el archivo. 
-     * @throws IOException 
+     * Cierra el scanner para liberar el archivo.
+     *
+     * @throws IOException
      */
     @Override
     public void close() throws IOException {
         sc.close();
     }
-        
     /**
-     * Elimina los acentos de un string. 
-     * á -> a
-     * @param s - string a limpiar. 
-     * @return - el string sin acentos. 
+     * Clase iteradora del archivo. 
      */
-    private String stripAccents(String s) {
-        s = Normalizer.normalize(s, Normalizer.Form.NFD);
-        s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-        return s;
-    }
-    
-    /**
-     * Elimina todo aquello que no sea palabras de 
-     * solo letras. 
-     * @param s - string a limpiar.
-     * @return - string solamente de letras. 
-     */
-    private String stripNonAlphabetic(String s) {
-        return s.replaceAll("([a-z]+[0-9]+|[0-9]+[a-z]+)[a-z0-9]*\b|[^A-Za-z]+", "");
-    }
-    /**
-     * Elimina acentos, palabras alfanumericas y puntuacion. 
-     * @param s - string a limpiar. 
-     * @return - string limpio.
-     */
-    private String cleanString(String s) {
-        return stripNonAlphabetic(stripAccents(s));
-    }
-
     private class FileIterator implements Iterator<String> {
 
         @Override
@@ -125,6 +101,40 @@ public class FileParser implements Iterable<String>, Closeable {
             throw new UnsupportedOperationException("No se puede alterar el contenido del archivo."); //To change body of generated methods, choose Tools | Templates.
         }
 
+    }
+
+    /**
+     * Elimina los acentos de un string.
+     * á -> a
+     *
+     * @param s - string a limpiar.
+     * @return - el string sin acentos.
+     */
+    public static String stripAccents(String s) {
+        s = Normalizer.normalize(s, Normalizer.Form.NFD);
+        s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return s;
+    }
+
+    /**
+     * Elimina todo aquello que no sea palabras de
+     * solo letras.
+     *
+     * @param s - string a limpiar.
+     * @return - string solamente de letras.
+     */
+    public static String stripNonAlphabetic(String s) {
+        return s.replaceAll("([a-z]+[0-9]+|[0-9]+[a-z]+)[a-z0-9]*\b|[^A-Za-z]+", "");
+    }
+
+    /**
+     * Elimina acentos, palabras alfanumericas y puntuacion.
+     *
+     * @param s - string a limpiar.
+     * @return - string limpio.
+     */
+    public static String cleanString(String s) {
+        return stripNonAlphabetic(stripAccents(s));
     }
 
 }
