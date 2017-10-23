@@ -217,9 +217,9 @@ public class TSBHashtable<K,V> implements Map<K,V>, Cloneable, Serializable
        if(key == null) throw new NullPointerException("get(): parámetro null");
        
        int ib = this.h(key.hashCode());
-       TSBArrayList<Map.Entry<K, V>> bucket = this.table[ib];
+       TSBArrayList<Map.Entry<K, V>> bucket = this.table[ib];   
             
-       Map.Entry<K, V> x = this.search_for_entry((K)key, bucket);
+       Map.Entry<K, V> x = this.search_for_entry((K)key, bucket);        
        return (x != null)? x.getValue() : null;
     }
 

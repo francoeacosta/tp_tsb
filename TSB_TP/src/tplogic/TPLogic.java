@@ -10,6 +10,7 @@ import hashtable.TSBHashtable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import tplogic.filemanagment.*;
 
 /**
  *
@@ -17,18 +18,19 @@ import java.util.ArrayList;
  */
 public class TPLogic {
 
+    private String filesUsedName = "filesUsed.dat";
     private ArrayList<File> filesUsed;
+    private String hashtableName = "hashtable.dat";
     private TSBHashtable<String, Integer> hashtable;
 
+    /**
+     * Se crea la instancia y se lee desde los archivos
+     * tanto hashtabel como filesUsed. Depende de la logica
+     * implementada en load().
+     */
     public TPLogic() {
-        /**
-         * HACER:
-         * En realidad aca tiene que deserializar el arhivo, si es que
-         * lo encuentra, y sino instanciar como esta hecho.
-         */
+        load();
 
-        hashtable = new TSBHashtable();
-        filesUsed = new ArrayList();
     }
 
     /**
@@ -95,6 +97,9 @@ public class TPLogic {
         // Se agrega el archivo a la lista de archivos analizados.
         filesUsed.add(file);
 
+        // Se guardan los cambios. 
+        save();
+
         // Se retorna la diferencia de size del hashtable. 
         return hashtable.size() - countPrev;
 
@@ -133,6 +138,73 @@ public class TPLogic {
      */
     public ArrayList<File> getFilesUsed() {
         return filesUsed;
+    }
+
+    /**
+     * Guarda hashtable en un archivo.
+     */
+    private void saveHashtable() {
+        HashtableWritter htw = new HashtableWritter(hashtableName);
+        htw.write(hashtable);
+
+    }
+
+    /**
+     * Guarda filesUsed en un archivo.
+     */
+    private void saveFilesUsed() {
+        ArrayListWritter alw = new ArrayListWritter(filesUsedName);
+        alw.write(filesUsed);
+
+    }
+
+    /**
+     * Carga hashtable desde un archivo.
+     */
+    private void loadHashtable() {
+        HashtableReader htr = new HashtableReader(hashtableName);
+        hashtable = htr.read();
+
+    }
+
+    /**
+     * Carga filesUsed desde un archivo.
+     */
+    private void loadFilesUsed() {
+        ArrayListReader alr = new ArrayListReader(filesUsedName);
+        filesUsed = alr.read();
+    }
+
+    /**
+     * Maneja la logica de la carga. Si al leer hashtable o
+     * filesUsed se tiene un null en alguno de los dos, es
+     * decir no se encontro el archivo o se produjo un error,
+     * crea desde cero las intancias.
+     */
+    private void load() {
+        loadHashtable();
+        loadFilesUsed();
+        if (hashtable == null || filesUsed == null) {
+            clear();
+        }
+    }
+
+    /**
+     * Realiza el guardado de la hashtable y filesUsed.
+     */
+    private void save() {
+
+    }
+
+    /**
+     * Borra toda la informacion de hashtable y filesUsed y
+     * sobre escribe a los archivos relacionados.
+     */
+    public void clear() {
+        hashtable = new TSBHashtable();
+        saveHashtable();
+        filesUsed = new ArrayList();
+        saveFilesUsed();
     }
 
 }
