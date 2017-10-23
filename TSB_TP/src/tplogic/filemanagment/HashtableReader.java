@@ -53,6 +53,7 @@ public class HashtableReader {
             istream.close();
         } catch (Exception e) {
             ht = null;
+            System.out.println(e); //***************************** CHECK
         }
 
         return ht;

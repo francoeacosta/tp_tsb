@@ -40,18 +40,19 @@ public class ArrayListReader {
      * @return - el objeto si lo encuentra, null si hay un error. 
      */
     public ArrayList read() {
-        ArrayList sl;
+        ArrayList al;
 
         try (FileInputStream istream = new FileInputStream(arch)) {
             ObjectInputStream p = new ObjectInputStream(istream);
 
-            sl = (ArrayList) p.readObject();
+            al = (ArrayList) p.readObject();
 
             p.close();
         } catch (Exception e) {
-            sl = null;
+            al = null;
+            System.out.println(e); //***************************** CHECK
         }
 
-        return sl;
+        return al;
     }
 }

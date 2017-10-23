@@ -8,8 +8,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="348.0" prefWidth="497.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.FXMLDocumentController">
     <children>
-        <Button fx:id="btn_readFIle" layoutX="55.0" layoutY="47.0" onAction="#readFileClick" text="Leer archivo" />
-        <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
+        <Button fx:id="btn_readFIle" layoutX="46.0" layoutY="47.0" onAction="#readFileClick" text="Leer archivo" />
       <ListView fx:id="list_files" layoutX="275.0" layoutY="37.0" prefHeight="200.0" prefWidth="200.0" />
       <Label layoutX="275.0" layoutY="14.0" text="Archivos Leidos" />
       <Label layoutX="275.0" layoutY="245.0" prefHeight="17.0" prefWidth="135.0" text="Total de palabras leidas: " />
@@ -17,6 +16,7 @@
       <Button fx:id="btn_search" layoutX="46.0" layoutY="194.0" mnemonicParsing="false" onAction="#searchClick" text="Buscar" />
       <Label fx:id="lbl_searchResult" layoutX="231.0" layoutY="198.0" text="0" visible="false" />
       <Label fx:id="lbl_frecuency" layoutX="121.0" layoutY="198.0" prefHeight="17.0" prefWidth="69.0" text="Frecuencia:" visible="false" />
-      <TextField fx:id="txt_wordToSearch" layoutX="47.0" layoutY="162.0" prefHeight="25.0" prefWidth="200.0" />
+      <TextField fx:id="txt_wordToSearch" layoutX="47.0" layoutY="162.0" prefHeight="25.0" prefWidth="208.0" />
+      <Button fx:id="cleanButton" layoutX="363.0" layoutY="284.0" mnemonicParsing="false" onAction="#cleanButtonClick" text="Limpiar contenido" />
     </children>
 </AnchorPane>

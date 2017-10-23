@@ -679,7 +679,7 @@ public class TSBHashtable<K,V> implements Map<K,V>, Cloneable, Serializable
      * la tabla. Lanzará una IllegalArgumentException si alguno de los dos 
      * parámetros es null.
      */
-    private class Entry<K, V> implements Map.Entry<K, V>
+    private class Entry<K, V> implements Map.Entry<K, V>,Serializable
     {
         private K key;
         private V value;

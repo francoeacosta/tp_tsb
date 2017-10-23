@@ -145,7 +145,7 @@ public class TPLogic {
      */
     private void saveHashtable() {
         HashtableWritter htw = new HashtableWritter(hashtableName);
-        htw.write(hashtable);
+        System.out.println(htw.write(hashtable));
 
     }
 
@@ -154,7 +154,7 @@ public class TPLogic {
      */
     private void saveFilesUsed() {
         ArrayListWritter alw = new ArrayListWritter(filesUsedName);
-        alw.write(filesUsed);
+        System.out.println(alw.write(filesUsed));
 
     }
 
@@ -193,7 +193,8 @@ public class TPLogic {
      * Realiza el guardado de la hashtable y filesUsed.
      */
     private void save() {
-
+        saveHashtable();
+        saveFilesUsed();
     }
 
     /**
@@ -205,6 +206,16 @@ public class TPLogic {
         saveHashtable();
         filesUsed = new ArrayList();
         saveFilesUsed();
+    }
+
+    /**
+     * Responde si un archivo fue o no leido.
+     *
+     * @param file - el archivo a chequear.
+     * @return - true si fue leido.
+     */
+    public boolean wasReaded(File file) {
+        return filesUsed.contains(file);
     }
 
 }

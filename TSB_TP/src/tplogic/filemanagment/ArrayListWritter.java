@@ -50,6 +50,7 @@ public class ArrayListWritter {
 
             p.flush();
         } catch (Exception e) {
+            System.out.println(e); //***************************** CHECK
             return false;
         }
         return true;
