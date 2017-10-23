@@ -1,1 +1,0 @@
-Creo  .hashCode() de Strings, tiene muchas colisiones. -Gonza.
