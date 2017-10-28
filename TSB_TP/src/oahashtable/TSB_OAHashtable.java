@@ -8,8 +8,11 @@ package oahashtable;
 import hashtable.TSBArrayList;
 import hashtable.TSBHashtable;
 import java.io.Serializable;
+import java.util.AbstractCollection;
+import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -20,7 +23,6 @@ import java.util.Set;
  */
 public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable {
 
-    // ################################## ATRIBUTOS
     // Arreglo de soporte.
     private ArrayList<Map.Entry<K, V>> table;
 
@@ -38,6 +40,11 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
     // Conteo de modificaciones. 
     protected transient int modCount;
+
+    // Atributos para gestionar la vista. 
+    private transient Set<K> keySet = null;
+    private transient Set<Map.Entry<K, V>> entrySet = null;
+    private transient Collection<V> values = null;
 
     // ################################## CONSTRUCTORES
     /**
@@ -90,22 +97,22 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
     @Override
     public int size() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.count;
     }
 
     @Override
     public boolean isEmpty() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (this.count == 0);
     }
 
     @Override
     public boolean containsKey(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (this.get((K) o) != null);
     }
 
     @Override
     public boolean containsValue(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.contains(o);
     }
 
     @Override
@@ -125,35 +132,77 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
     @Override
     public void putAll(Map<? extends K, ? extends V> map) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (Map.Entry<? extends K, ? extends V> e : map.entrySet()) {
+            put(e.getKey(), e.getValue());
+        }
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.table = new ArrayList(this.initial_capacity);
+        this.count = 0;
+        this.modCount++;
     }
 
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (keySet == null) {
+            // keySet = Collections.synchronizedSet(new KeySet()); 
+            keySet = new KeySet();
+        }
+        return keySet;
     }
 
     @Override
     public Collection<V> values() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (values == null) {
+            // values = Collections.synchronizedCollection(new ValueCollection());
+            values = new ValueCollection();
+        }
+        return values;
     }
 
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (entrySet == null) {
+            // entrySet = Collections.synchronizedSet(new EntrySet()); 
+            entrySet = new EntrySet();
+        }
+        return entrySet;
     }
 
-    /**
-     * Clase privada que maneja una entrada.
-     *
-     * @param <K>
-     * @param <V>
-     */
+    // ################################## FUNCIONES HASH
+    private int h(int k) {
+        return h(k, this.table.size());
+    }
+
+    private int h(K key) {
+        return h(key.hashCode(), this.table.size());
+    }
+
+    private int h(K key, int t) {
+        return h(key.hashCode(), t);
+    }
+
+    private int h(int k, int t) {
+        if (k < 0) {
+            k *= -1;
+        }
+        return k % t;
+    }
+
+    // ################################## REDEFINICION DE LOS METODOS DE OBJECT
+    // ################################## METODOS ADICIONALES 
+    public boolean contains(Object value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.     
+    }
+
+    protected void rehash() {
+
+    }
+
+    // ################################## CLASES PRIVADAS
+   
     private class Entry<K, V> implements Map.Entry<K, V>, Serializable {
 
         private K key;
@@ -238,4 +287,45 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
         }
     }
 
+    private class KeySet extends AbstractSet<K> {
+
+        @Override
+        public Iterator<K> iterator() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int size() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
+
+    private class EntrySet extends AbstractSet<Map.Entry<K, V>> {
+
+        @Override
+        public Iterator<Map.Entry<K, V>> iterator() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int size() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
+
+    private class ValueCollection extends AbstractCollection<V> {
+
+        @Override
+        public Iterator<V> iterator() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int size() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
 }
