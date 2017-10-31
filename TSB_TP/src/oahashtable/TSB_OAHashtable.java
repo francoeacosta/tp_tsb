@@ -11,6 +11,7 @@ import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
@@ -208,10 +209,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
              * i + j^2, si el puntero se pasa del largo del
              * array, se sigue de manera circular.
              */
-            i += Math.pow(j, 2);
-            if (i >= table.length) {
-                i -= table.length;
-            }
+            i = h(mi + (int) Math.pow(j, 2));
 
             /**
              * 1) Si la posicion analizada esta abierta, se la inserta ahi.
@@ -278,10 +276,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
              * i + j^2, si el puntero se pasa del largo del
              * array, se sigue de manera circular.
              */
-            i += Math.pow(j, 2);
-            if (i >= table.length) {
-                i -= table.length;
-            }
+            i = h(mi + (int) Math.pow(j, 2));
 
             /**
              * 1) Si la casilla esta abierta, se retorna null.
@@ -366,6 +361,17 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
     }
 
     // ################################## REDEFINICION DE LOS METODOS DE OBJECT
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        TSB_OAHashtable<K, V> t = (TSB_OAHashtable<K, V>)super.clone();
+        t.table = new Map.Entry[table.length];
+        t.putAll(this);
+        t.keySet = null;
+        t.entrySet = null;
+        t.values = null;
+        t.modCount = 0;
+        return t;
+    }
     // ################################## METODOS ADICIONALES 
     public boolean contains(Object value) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.     
@@ -385,6 +391,13 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
             return false;
         }
         return !((Entry) table[index]).isActive();
+    }
+
+    private boolean isClose(int index) {
+        if (isOpen(index)) {
+            return false;
+        }
+        return ((Entry) table[index]).isActive();
     }
 
     // ################################## CLASES PRIVADAS
@@ -474,9 +487,62 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
     private class KeySet extends AbstractSet<K> {
 
+        private class KeySetIterator implements Iterator<K> {
+
+            private int actual;
+            private boolean next_ok;
+            Map.Entry<K, V> t[];
+
+            public KeySetIterator() {
+                actual = -1;
+                next_ok = false;
+                t = TSB_OAHashtable.this.table;
+            }
+
+            @Override
+            public boolean hasNext() {
+
+                if (count == 0) {
+                    return false;
+                }
+                int i = actual;
+                do {
+                    i++;
+
+                } while (i < t.length && !isClose(i));
+
+                return !(t.length == i);
+
+            }
+
+            @Override
+            public K next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException("No quedan mas elementos.");
+                }
+                do {
+                    actual++;
+
+                } while (actual < t.length && !isClose(actual));
+                next_ok = true;
+                return t[actual].getKey();
+            }
+
+            @Override
+            public void remove() {
+                if (!next_ok) {
+                    throw new IllegalStateException("remove(): debe invocar a next() antes de remove()");
+                }
+                ((Entry) t[actual]).kill();
+                next_ok = false;
+                TSB_OAHashtable.this.count--;
+            }
+
+        }
+
         @Override
         public Iterator<K> iterator() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return null;
         }
 
         @Override
