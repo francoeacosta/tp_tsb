@@ -5,12 +5,9 @@
  */
 package oahashtable;
 
-import hashtable.TSBArrayList;
-import hashtable.TSBHashtable;
 import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,7 +21,7 @@ import java.util.Set;
 public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable {
 
     // Arreglo de soporte.
-    private ArrayList<Map.Entry<K, V>> table;
+    private Map.Entry<K, V> table[];
 
     // Tamaño máximo.
     private final static int MAX_SIZE = Integer.MAX_VALUE;
@@ -87,7 +84,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
             }
         }
 
-        this.table = new ArrayList(initial_capacity);
+        this.table = new Map.Entry[initial_capacity];
 
         this.initial_capacity = initial_capacity;
         this.load_factor = load_factor;
@@ -116,18 +113,195 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
     }
 
     @Override
-    public V get(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public V get(Object k) {
+        /**
+         * Se opera la funcion hash sobre la clave k, y se obtiene
+         * la direccion madre.
+         */
+        int mi = this.h((K) k);
+
+        /**
+         * Se define aux, como la entrada auxiliar en la exploracion.
+         */
+        Entry<K, V> aux;
+
+        /**
+         * Se define una variable de iteracion que comienza
+         * desde la direccion madre.
+         */
+        int i = mi;
+
+        /**
+         * Comienza la exploracion cuadratica.
+         */
+        for (int j = 0;; j++) {
+
+            /**
+             * Se incrementa el puntero segun la formula
+             * i + j^2, si el puntero se pasa del largo del
+             * array, se sigue de manera circular.
+             */
+            i += Math.pow(j, 2);
+            if (i >= table.length) {
+                i -= table.length;
+            }
+
+            /**
+             * 1) Si la casilla esta abierta, se retorna null.
+             * 2) Si no es una tumba y es la key que se paso por
+             * parametro, se devuelve el valor v.
+             */
+            if (isOpen(i)) {
+                return null;
+            } else {
+                aux = (Entry) table[i];
+
+                if (!isTombstone(i) && k.equals(aux.getKey())) {
+                    return aux.getValue();
+                }
+            }
+        }
+
     }
 
     @Override
     public V put(K k, V v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (k == null || v == null) {
+            throw new NullPointerException("Los parametros no pueden ser null.");
+        }
+
+        /**
+         * Si la tabla hash ya contiene el valor se retorna null.
+         */
+        if (contains(v)) {
+            return null;
+        }
+
+        /**
+         * Se opera la funcion hash sobre la clave k, y se obtiene
+         * la direccion madre.
+         */
+        int mi = this.h(k);
+
+        /**
+         * Se define el valor old, para el valor a retornar.
+         * Se define aux, como la entrada auxiliar en la exploracion.
+         * Se define toPut, como la entrada a ser agregada.
+         */
+        V old = null;
+        Entry<K, V> aux;
+        Entry<K, V> toPut = new Entry(k, v);
+
+        /**
+         * Se define una variable de iteracion que comienza
+         * desde la direccion madre.
+         */
+        int i = mi;
+
+        /**
+         * Comienza la exploracion cuadratica.
+         */
+        for (int j = 0;; j++) {
+
+            /**
+             * Se incrementa el puntero segun la formula
+             * i + j^2, si el puntero se pasa del largo del
+             * array, se sigue de manera circular.
+             */
+            i += Math.pow(j, 2);
+            if (i >= table.length) {
+                i -= table.length;
+            }
+
+            /**
+             * 1) Si la posicion analizada esta abierta, se la inserta ahi.
+             * 2) Si la posicion analizada es una tumba y es igual a la
+             * insertada, se la vuelve a activar.
+             * 3) Si no es una tumba, se analiza si es la misma key, y en ese
+             * caso se cambia el valor.
+             */
+            if (isOpen(i)) {
+                // esta abierta.
+                table[i] = new Entry(k, v);
+                break;
+
+            } else {
+                aux = (Entry) table[i];
+
+                if (isTombstone(i) && aux.equals(toPut)) {
+                    // es una tumba y es igual a la entrada a agregar.
+                    aux.revive();
+                    break;
+                } else if (k.equals(aux.getKey())) {
+                    // no es una tumba, y es el mismo key. 
+                    old = aux.getValue();
+                    aux.setValue(v);
+                }
+            }
+        }
+        return old;
     }
 
     @Override
-    public V remove(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public V remove(Object k) {
+
+        if (k == null) {
+            throw new NullPointerException("El parámetro no puede ser null");
+        }
+
+        /**
+         * Se opera la funcion hash sobre la clave k, y se obtiene
+         * la direccion madre.
+         */
+        int mi = this.h((K) k);
+
+        /**
+         * Se define el valor old, para el valor a retornar.
+         * Se define aux, como la entrada auxiliar en la exploracion.
+         */
+        V old = null;
+        Entry<K, V> aux;
+
+        /**
+         * Se define una variable de iteracion que comienza
+         * desde la direccion madre.
+         */
+        int i = mi;
+
+        /**
+         * Comienza la exploracion cuadratica.
+         */
+        for (int j = 0;; j++) {
+
+            /**
+             * Se incrementa el puntero segun la formula
+             * i + j^2, si el puntero se pasa del largo del
+             * array, se sigue de manera circular.
+             */
+            i += Math.pow(j, 2);
+            if (i >= table.length) {
+                i -= table.length;
+            }
+
+            /**
+             * 1) Si la casilla esta abierta, se retorna null.
+             * 2) Si no es una tumba y es la key que se paso por
+             * parametro, se marca a la entrada como tumba.
+             */
+            if (isOpen(i)) {
+                return null;
+            } else {
+                aux = (Entry) table[i];
+
+                if (!isTombstone(i) && k.equals(aux.getKey())) {
+                    // La key es igual a la pasada por parametro.
+                    old = aux.getValue();
+                    aux.kill();
+                    break;
+                }
+            }
+        }
+        return old;
     }
 
     @Override
@@ -139,7 +313,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
     @Override
     public void clear() {
-        this.table = new ArrayList(this.initial_capacity);
+        this.table = new Map.Entry[this.initial_capacity];
         this.count = 0;
         this.modCount++;
     }
@@ -173,11 +347,11 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
     // ################################## FUNCIONES HASH
     private int h(int k) {
-        return h(k, this.table.size());
+        return h(k, this.table.length);
     }
 
     private int h(K key) {
-        return h(key.hashCode(), this.table.size());
+        return h(key.hashCode(), this.table.length);
     }
 
     private int h(K key, int t) {
@@ -201,8 +375,19 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
     }
 
+    private boolean isOpen(int index) {
+        return (table[index] == null);
+
+    }
+
+    private boolean isTombstone(int index) {
+        if (isOpen(index)) {
+            return false;
+        }
+        return !((Entry) table[index]).isActive();
+    }
+
     // ################################## CLASES PRIVADAS
-   
     private class Entry<K, V> implements Map.Entry<K, V>, Serializable {
 
         private K key;
