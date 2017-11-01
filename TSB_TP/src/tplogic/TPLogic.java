@@ -7,6 +7,7 @@ package tplogic;
 
 import fileparser.FileParser;
 import hashtable.TSBHashtable;
+import oahashtable.TSB_OAHashtable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class TPLogic {
     private String filesUsedName = "filesUsed.dat";
     private ArrayList<File> filesUsed;
     private String hashtableName = "hashtable.dat";
-    private TSBHashtable<String, Integer> hashtable;
+    private TSB_OAHashtable<String, Integer> hashtable;
 
     /**
      * Se crea la instancia y se lee desde los archivos
@@ -145,7 +146,7 @@ public class TPLogic {
      */
     private void saveHashtable() {
         HashtableWritter htw = new HashtableWritter(hashtableName);
-        System.out.println(htw.write(hashtable));
+        htw.write(hashtable);
 
     }
 
@@ -154,7 +155,7 @@ public class TPLogic {
      */
     private void saveFilesUsed() {
         ArrayListWritter alw = new ArrayListWritter(filesUsedName);
-        System.out.println(alw.write(filesUsed));
+        alw.write(filesUsed);
 
     }
 
@@ -162,7 +163,7 @@ public class TPLogic {
      * Carga hashtable desde un archivo.
      */
     private void loadHashtable() {
-        HashtableReader htr = new HashtableReader(hashtableName);
+        HashtableReader<TSB_OAHashtable> htr = new HashtableReader(hashtableName);
         hashtable = htr.read();
 
     }
@@ -202,7 +203,7 @@ public class TPLogic {
      * sobre escribe a los archivos relacionados.
      */
     public void clear() {
-        hashtable = new TSBHashtable();
+        hashtable = new TSB_OAHashtable();
         saveHashtable();
         filesUsed = new ArrayList();
         saveFilesUsed();

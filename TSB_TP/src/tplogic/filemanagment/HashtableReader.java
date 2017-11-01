@@ -8,13 +8,15 @@ package tplogic.filemanagment;
 import hashtable.TSBHashtable;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.Map;
 
 
 /**
  *
  * @author Gonzalo
+ * @param <E>
  */
-public class HashtableReader {
+public class HashtableReader<E extends Map> {
 
     private String arch = "map.dat";
 
@@ -40,14 +42,14 @@ public class HashtableReader {
      *
      * @return - el objeto si lo encuentra, null si hay un error.
      */
-    public TSBHashtable read() {
-        TSBHashtable ht;
+    public E read() {
+        E ht;
 
         try {
             FileInputStream istream = new FileInputStream(arch);
             ObjectInputStream p = new ObjectInputStream(istream);
 
-            ht = (TSBHashtable) p.readObject();
+            ht = (E) p.readObject();
 
             p.close();
             istream.close();

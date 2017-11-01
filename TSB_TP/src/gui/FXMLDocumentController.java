@@ -49,7 +49,9 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button cleanButton;
 
-    // ################################# EVENTOS DE GUI.
+    /*
+    ################################# EVENTOS DE GUI.
+     */
     /**
      * Initializes the controller class.
      *
@@ -98,7 +100,9 @@ public class FXMLDocumentController implements Initializable {
         clear();
     }
 
-    // ################################# METODOS SOPORTE DE EVENTOS.
+    /*
+    ################################# METODOS SOPORTE DE EVENTOS.
+     */
     /**
      * Metodo que maneja la logica de hacer una lectura.
      *
@@ -142,7 +146,9 @@ public class FXMLDocumentController implements Initializable {
 
         } catch (Exception e) {
             alertError("Hubo un error al leer el archivo.");
+            System.out.println(e);
         }
+        clearGUI();
     }
 
     /**
@@ -154,7 +160,7 @@ public class FXMLDocumentController implements Initializable {
         String word = this.txt_wordToSearch.getText();
 
         // Se chequea que no este vacio. 
-        if (!word.isEmpty()) {
+        if (!word.trim().isEmpty()) {
 
             // Se obtiene el resultado. 
             int result = logic.getWordFrecuency(word);
@@ -164,6 +170,7 @@ public class FXMLDocumentController implements Initializable {
 
         } else {
             alertError("Debe ingresar una palabra para buscar.");
+            clearGUI();
         }
     }
 
@@ -180,11 +187,16 @@ public class FXMLDocumentController implements Initializable {
         // Se actualiza la lista de archivos leidos. 
         setFileList(logic.getFilesUsed());
 
-        // Se invisibilizan los labels de busqueda. 
-        setResultLabels(false);
+        // Se limpia la GUI.
+        clearGUI();
+        
     }
+    
+   
 
-    //################################# METODO QUE ACTUAN SOBRE CONTROLES.
+    /*
+    ################################# METODOS QUE ACTUAN SOBRE CONTROLES.
+     */
     /**
      * Metodo para mostrar el resultado de la busqueda.
      *
@@ -272,6 +284,17 @@ public class FXMLDocumentController implements Initializable {
                 men,
                 ButtonType.OK);
         alert.showAndWait();
+    }
+    
+    /**
+     * Limpia todos los elementos de la pantalla.
+     */
+     private void clearGUI(){
+        // Se invisibilizan los labels de busqueda. 
+        setResultLabels(false);
+        
+        // Se limpia la casilla de busqueda. 
+        txt_wordToSearch.clear();
     }
 
 }

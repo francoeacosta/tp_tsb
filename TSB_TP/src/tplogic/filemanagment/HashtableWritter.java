@@ -7,13 +7,15 @@ package tplogic.filemanagment;
 
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
-import hashtable.TSBHashtable;
+
+import java.util.Map;
 
 /**
  *
  * @author Gonzalo
+ * @param <E>
  */
-public class HashtableWritter {
+public class HashtableWritter<E extends Map> {
 
     // nombre del archivo serializado...
     private String arch = "map.dat";
@@ -38,10 +40,11 @@ public class HashtableWritter {
     /**
      * Graba un map en un archivo.
      *
-     * @param mp - el mapa a guardar.
+     * @param ht
+     *
      * @return - true si puede grabar.
      */
-    public boolean write(TSBHashtable ht) {
+    public boolean write(E ht) {
 
         try (FileOutputStream ostream = new FileOutputStream(arch)) {
 
