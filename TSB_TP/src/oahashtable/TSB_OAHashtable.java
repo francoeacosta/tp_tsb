@@ -131,8 +131,8 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      */
     @Override
     public boolean containsKey(Object o) {
-        for (V val : values()) {
-            if (val.equals(o)) {
+        for (K key : keySet()) {
+            if (key.equals(o)) {
                 return true;
             }
         }
