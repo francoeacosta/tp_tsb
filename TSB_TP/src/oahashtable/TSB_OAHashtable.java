@@ -19,6 +19,8 @@ import java.util.Set;
 /**
  *
  * @author Gonzalo
+ * @param <K>
+ * @param <V>
  */
 public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable {
 
@@ -35,7 +37,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
     private int count;
 
     // Factor de carga.
-    private float load_factor;
+    private double load_factor;
 
     // Conteo de modificaciones. 
     protected transient int modCount;
@@ -53,7 +55,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      * 0.5.
      */
     public TSB_OAHashtable() {
-        this(0, 0.5f);
+        this(0, 0.5);
     }
 
     /**
@@ -76,7 +78,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      * @param initial_capacity la capacidad inicial de la tabla.
      * @param load_factor el factor de carga de la tabla.
      */
-    public TSB_OAHashtable(int initial_capacity, float load_factor) {
+    public TSB_OAHashtable(int initial_capacity, double load_factor) {
         if (load_factor <= 0) {
             load_factor = 0.5f;
         }
@@ -631,6 +633,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      * las entradas.
      */
     protected void rehash() {
+
         // Se encuentra el proximo tamaño primo. 
         int newSize = siguientePrimo(table.length);
 
@@ -644,7 +647,9 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
          * tabla vieja.
          * 3) Se asigna la nueva tabla como la tabla
          * del hashtable actual.
-         * 4) Se utiliza el metodo putAll() en el hashtable
+         * 4) Se setea count en 0, para poder usar el metodo putall() y que
+         * no se modifique erroneamente la cantidad.
+         * 5) Se utiliza el metodo putAll() en el hashtable
          * actual, haciendo que se ingresen todos los
          * del auxiliar.
          */
@@ -653,11 +658,15 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
         // Paso 2)
         t.table = table;
+        t.count = this.count;
 
         // Paso 3)
         this.table = newTable;
 
         // Paso 4)
+        this.count = 0;
+
+        // Paso 5)
         putAll(t);
         System.out.println("rehashing.....");
 
@@ -703,7 +712,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      * @return - true, si la tabla sobrepasa el valor de carga.
      */
     private boolean tableOverloaded() {
-        return (count / table.length) > load_factor;
+        return ((double) count / (double) table.length) > load_factor;
     }
 
     /**
@@ -871,7 +880,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
                 } while (i < t.length && !isClose(i));
 
-                return !(t.length >= i);
+                return (i < t.length);
 
             }
 
@@ -997,7 +1006,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
                 } while (i < t.length && !isClose(i));
 
-                return !(t.length >= i);
+                return (i < t.length);
 
             }
 
@@ -1113,8 +1122,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
                 } while (i < t.length && !isClose(i));
 
-                return !(t.length >= i);
-
+                return (i < t.length);
             }
 
             @Override
