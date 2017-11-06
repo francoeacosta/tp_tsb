@@ -75,8 +75,9 @@ public class FileParser implements Iterable<String>, Closeable {
     public void close() throws IOException {
         sc.close();
     }
+
     /**
-     * Clase iteradora del archivo. 
+     * Clase iteradora del archivo.
      */
     private class FileIterator implements Iterator<String> {
 

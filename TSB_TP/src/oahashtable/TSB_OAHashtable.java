@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package oahashtable;
 
 import java.io.Serializable;
@@ -17,6 +12,9 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
+ * Clase TSB_OAHashtable (por TSB Open Addressing Hash Table). Representa
+ * una Tabla Hash pero con estrategia de Direccionamiento Abierto para la
+ * resolución de colisiones.
  *
  * @author Gonzalo
  * @param <K>
@@ -75,8 +73,8 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      * es menor o igual a 0, la tabla será creada de tamaño 11. Si el factor de
      * carga indicado es negativo o cero, se ajustará a 0.8f.
      *
-     * @param initial_capacity la capacidad inicial de la tabla.
-     * @param load_factor el factor de carga de la tabla.
+     * @param initial_capacity - la capacidad inicial de la tabla.
+     * @param load_factor - el factor de carga de la tabla.
      */
     public TSB_OAHashtable(int initial_capacity, double load_factor) {
         if (load_factor <= 0) {
@@ -128,9 +126,17 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      *
      * @param o - La clave a analizar.
      * @return - true, si esta presente la clave.
+     * @throws ClassCastException - si el tipo de la clave no es compatible con
+     * el mapa.
+     * @throws NullPointerException - si la clave es null.
      */
     @Override
-    public boolean containsKey(Object o) {
+    public boolean containsKey(Object o) throws ClassCastException, NullPointerException {
+
+        if (o == null) {
+            throw new NullPointerException("La clave no puede ser null.");
+        }
+
         for (K key : keySet()) {
             if (key.equals(o)) {
                 return true;
@@ -144,9 +150,12 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      *
      * @param o - el valor a ser analizado.
      * @return - true, si el valor esta presente.
+     * @throws ClassCastException - si el tipo de la clave no es compatible con
+     * el mapa.
+     * @throws NullPointerException - si la clave es null.
      */
     @Override
-    public boolean containsValue(Object o) {
+    public boolean containsValue(Object o) throws ClassCastException, NullPointerException {
         return this.contains(o);
     }
 
@@ -155,9 +164,16 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      *
      * @param k - la clave.
      * @return - el valor asociado si existe, null si no.
+     * @throws ClassCastException - si el tipo de la clave no es compatible con
+     * el mapa.
+     * @throws NullPointerException - si la clave es null.
      */
     @Override
-    public V get(Object k) {
+    public V get(Object k) throws ClassCastException, NullPointerException {
+
+        if (k == null || k == null) {
+            throw new NullPointerException("Los parametros no pueden ser null.");
+        }
 
         /**
          * Si la clave no esta presente, retorna null.
@@ -214,18 +230,24 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
     /**
      * Incorpora un nuevo set (k,v) dentro del hashtable.
-     * a) Si el valor ya existe, retorna null.
-     * b) Si la clave no existia, lo inserta y retorna null.
-     * c) Si la clave existia, se reemplaza el valor asociado
+     *
+     * a) Si la clave no existia, lo inserta y retorna null.
+     * b) Si la clave existia, se reemplaza el valor asociado
      * con el valor pasado por parametro y se lo retorna.
      *
      * @param k - la clave a ser insertada.
      * @param v - el valor a ser asociado.
      * @return - null, si el valor ya existe o se inserta correctamente, el
      * valor anterior si la clave existia.
+     * @throws ClassCastException - si el tipo de la clave no es compatible con
+     * el mapa.
+     * @throws NullPointerException - si la clave es null.
+     *
+     *
      */
     @Override
-    public V put(K k, V v) {
+    public V put(K k, V v) throws ClassCastException, NullPointerException {
+
         if (k == null || v == null) {
             throw new NullPointerException("Los parametros no pueden ser null.");
         }
@@ -317,10 +339,13 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      * Si no la encuentra, retorna null.
      *
      * @param k - la clave.
-     * @return
+     * @return - el valor viejo si lo encuentra, null si no.
+     * @throws ClassCastException - si el tipo de la clave no es compatible con
+     * el mapa.
+     * @throws NullPointerException - si la clave es null.
      */
     @Override
-    public V remove(Object k) {
+    public V remove(Object k) throws ClassCastException, NullPointerException {
 
         if (k == null) {
             throw new NullPointerException("El parámetro no puede ser null");
@@ -391,9 +416,18 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      * Se insertan todas las entradas de otro mapa.
      *
      * @param map - el mapa que contiene las entradas a agregar.
+     * @throws ClassCastException - si el tipo de la clave no es compatible con
+     * el mapa.
+     * @throws NullPointerException - si la clave es null.
+     *
      */
     @Override
-    public void putAll(Map<? extends K, ? extends V> map) {
+    public void putAll(Map<? extends K, ? extends V> map) throws ClassCastException, NullPointerException {
+
+        if (map == null) {
+            throw new NullPointerException("El parámetro no puede ser null");
+        }
+
         for (Map.Entry<? extends K, ? extends V> e : map.entrySet()) {
             put(e.getKey(), e.getValue());
         }
@@ -501,7 +535,9 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
         return k % t;
     }
 
-    // ################################## REDEFINICION DE LOS METODOS DE OBJECT
+    /*
+    ################################## REDEFINICION DE LOS METODOS DE OBJECT
+     */
     /**
      * Realiza una copia de la hashtable.
      *
@@ -518,6 +554,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
         t.entrySet = null;
         t.values = null;
         t.modCount = 0;
+        t.count = this.count;
         return t;
     }
 
@@ -612,14 +649,21 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
         return str.toString();
     }
 
-    // ################################## METODOS ADICIONALES 
+    /*
+    ################################## METODOS ADICIONALES 
+     */
     /**
      * Indica si un valor se encuentra en la tabla.
      *
      * @param value - valor a ser analizado.
      * @return - true, si esta en la tabla.
      */
-    public boolean contains(Object value) {
+    public boolean contains(Object value) throws NullPointerException {
+
+        if (value == null) {
+            throw new NullPointerException("El parametro no puede ser null.");
+        }
+
         for (V val : values()) {
             if (val.equals(value)) {
                 return true;
@@ -752,13 +796,21 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
         return ((Entry) table[index]).isActive();
     }
 
-    // ################################## CLASES PRIVADAS
+    /*
+    ################################## CLASES PRIVADAS
+     */
     private class Entry<K, V> implements Map.Entry<K, V>, Serializable {
 
         private K key;
         private V value;
         private boolean active; // Este atributo es el que señala si hay o no una tumba. 
 
+        /**
+         * Crea una entrada de la tabla hashtable.
+         *
+         * @param key - clave de la entrada.
+         * @param value - valor de la entrada.
+         */
         public Entry(K key, V value) {
             if (key == null || value == null) {
                 throw new IllegalArgumentException("Entry(): parámetro null...");
@@ -779,7 +831,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
         }
 
         @Override
-        public V setValue(V value) {
+        public V setValue(V value) throws IllegalArgumentException {
             if (value == null) {
                 throw new IllegalArgumentException("setValue(): parámetro null...");
             }
@@ -824,14 +876,25 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
             return "(" + key.toString() + ", " + value.toString() + ")";
         }
 
+        /**
+         * Indica si la entrada esta activa, es decir que no es una tumba.
+         *
+         * @return - true, si no es una tumba.
+         */
         public boolean isActive() {
             return this.active;
         }
 
+        /**
+         * Manda a una tumba a la entrada.
+         */
         public void kill() {
             this.active = false;
         }
 
+        /**
+         * Revive a una entrada desde la tumba.
+         */
         public void revive() {
             this.active = true;
         }
@@ -1031,7 +1094,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
                  * decir que tenga la entrada activa.
                  * Si el metodo hasNext() fue true, se garantiza que
                  * se encuentra una.
-                 * Una vez encontrada, se devuelve la KEY.
+                 * Una vez encontrada, se devuelve la ENTRY.
                  */
                 do {
                     actual++;
@@ -1146,7 +1209,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
                  * decir que tenga la entrada activa.
                  * Si el metodo hasNext() fue true, se garantiza que
                  * se encuentra una.
-                 * Una vez encontrada, se devuelve la KEY.
+                 * Una vez encontrada, se devuelve el VALUE.
                  */
                 do {
                     actual++;

@@ -113,6 +113,8 @@ public class FXMLDocumentController implements Initializable {
 
         // Intanciar el selector de archivos.                
         FileChooser fc = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fc.getExtensionFilters().add(extFilter);
 
         // Mostrar el selector y crear el archivo seleccionado. 
         File file = fc.showOpenDialog(null);
@@ -189,10 +191,8 @@ public class FXMLDocumentController implements Initializable {
 
         // Se limpia la GUI.
         clearGUI();
-        
+
     }
-    
-   
 
     /*
     ################################# METODOS QUE ACTUAN SOBRE CONTROLES.
@@ -253,11 +253,11 @@ public class FXMLDocumentController implements Initializable {
      */
     private boolean alertExistingFile(String fileName) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "El archivo '" + fileName + "' ya fue leido.",
+                "¿Desea leer otro archivo?",
                 ButtonType.YES,
                 ButtonType.NO);
 
-        alert.setHeaderText("¿Desea leer otro archivo?");
+        alert.setHeaderText("El archivo '" + fileName + "' ya fue leido.");
 
         Optional<ButtonType> result = alert.showAndWait();
         return result.get() == ButtonType.YES;
@@ -285,14 +285,14 @@ public class FXMLDocumentController implements Initializable {
                 ButtonType.OK);
         alert.showAndWait();
     }
-    
+
     /**
      * Limpia todos los elementos de la pantalla.
      */
-     private void clearGUI(){
+    private void clearGUI() {
         // Se invisibilizan los labels de busqueda. 
         setResultLabels(false);
-        
+
         // Se limpia la casilla de busqueda. 
         txt_wordToSearch.clear();
     }

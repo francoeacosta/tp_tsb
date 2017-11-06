@@ -5,6 +5,7 @@
  */
 package gui;
 
+import javafx.scene.image.Image;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ public class TSB_TP extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Analizador de palabras.");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
         stage.show();
 
     }
