@@ -98,6 +98,15 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
         this.modCount = 0;
     }
 
+    /**
+     * Crea una tabla a partir del contenido del Map especificado.
+     * @param t el Map a partir del cual se creará la tabla.
+     */     
+    public TSB_OAHashtable(Map<? extends K,? extends V> t)
+    {
+        this(0, 0.5);
+        this.putAll(t);
+    }
     /*
     ################################### METODOS DE LA INTERFAZ MAP
      */
@@ -171,7 +180,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
     @Override
     public V get(Object k) throws ClassCastException, NullPointerException {
 
-        if (k == null || k == null) {
+        if (k == null) {
             throw new NullPointerException("Los parametros no pueden ser null.");
         }
 
