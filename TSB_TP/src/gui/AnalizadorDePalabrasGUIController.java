@@ -161,18 +161,18 @@ public class AnalizadorDePalabrasGUIController implements Initializable {
     private void search() {
 
         // Se toma el texto del TextField.
-        String word = this.txt_wordToSearch.getText();
+        String word = this.txt_wordToSearch.getText().trim();
 
         // Se chequea que el texbox no este vacio. 
         if (word.isEmpty()) {
-            
+            setResultLabels(false);
             setSearchSintaxErrorLabel(SEARCH_EMPTY_BOX, true);
             return;
         }
 
         // Se chequea que el textbox tenga la sintaxis correcta. 
         if (word.matches("(.*[^A-Za-z])*")) {
-            clearGUI();
+            setResultLabels(false);
             setSearchSintaxErrorLabel(SEARCH_SINTAX_ERROR, true);
             return;
         }
