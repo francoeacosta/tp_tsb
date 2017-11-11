@@ -93,7 +93,7 @@ public class FileParser implements Iterable<String>, Closeable {
                 throw new NoSuchElementException("No quedan mas palabras.");
             }
 
-            return FileParser.this.cleanString(sc.next()).toLowerCase();
+            return FileParser.cleanString(sc.next()).toLowerCase();
 
         }
 

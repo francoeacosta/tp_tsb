@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 // Imports agregados. 
 import java.io.File;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import javafx.stage.FileChooser;
 import tplogic.TPLogic;
 import javafx.scene.control.Alert;
@@ -29,25 +30,27 @@ import javafx.scene.control.ButtonType;
  * @author estre
  */
 public class FXMLDocumentController implements Initializable {
-
-    @FXML
-    private Button btn_readFIle;
+    
+    private final String SEARCH_SINTAX_ERROR = "El texto a buscar debe tener solo caracteres y no debe tener tildes.";
+    private final String SEARCH_EMPTY_BOX = "Debe ingresar una palabra para buscar.";
+    private final String FILE_ERROR = "Hubo un error al leer el archivo.";
+    private final String READ_OTHER_FILE = "¿Desea leer otro archivo?";
+    private final String EMPTY = "";
+    
     @FXML
     private Label lbl_wordCount;
-    @FXML
-    private Button btn_search;
     @FXML
     private Label lbl_searchResult;
     @FXML
     private Label lbl_frecuency;
-
+    
     private TPLogic logic;
     @FXML
     private ListView<String> list_files;
     @FXML
     private TextField txt_wordToSearch;
     @FXML
-    private Button cleanButton;
+    private Label searchSintaxError;
 
     /*
     ################################# EVENTOS DE GUI.
@@ -118,18 +121,17 @@ public class FXMLDocumentController implements Initializable {
 
         // Mostrar el selector y crear el archivo seleccionado. 
         File file = fc.showOpenDialog(null);
-
+        
+        // Se chequea si el archivo ya fue leido. 
         if (logic.wasReaded(file)) {
             boolean readAgain = alertExistingFile(file.getName());
             if (readAgain) {
                 read();
             }
-            return;
-
+            return;            
         }
-
+        
         try {
-
             // Chequeo si se selecciono el archivo. 
             if (file != null) {
 
@@ -145,9 +147,9 @@ public class FXMLDocumentController implements Initializable {
                 // Se muestra un alert con la cantidad de palabras agreadas. 
                 alertAddedWords(palLeidas);
             }
-
+            
         } catch (Exception e) {
-            alertError("Hubo un error al leer el archivo.");
+            alertError(FILE_ERROR);
             System.out.println(e);
         }
         clearGUI();
@@ -161,19 +163,33 @@ public class FXMLDocumentController implements Initializable {
         // Se toma el texto del TextField.
         String word = this.txt_wordToSearch.getText();
 
-        // Se chequea que no este vacio. 
-        if (!word.trim().isEmpty()) {
-
-            // Se obtiene el resultado. 
-            int result = logic.getWordFrecuency(word);
-
-            // Se muestran el resultado de la busqueda. 
-            showResultOfSearch(result);
-
-        } else {
-            alertError("Debe ingresar una palabra para buscar.");
-            clearGUI();
+        // Se chequea que el texbox no este vacio. 
+        if (word.isEmpty()) {
+            
+            setSearchSintaxErrorLabel(SEARCH_EMPTY_BOX, true);
+            return;
         }
+
+        // Se chequea que el textbox tenga la sintaxis correcta. 
+        if (word.matches("(.*[^A-Za-z])*")) {
+            clearGUI();
+            setSearchSintaxErrorLabel(SEARCH_SINTAX_ERROR, true);
+            return;
+        }
+
+        /**
+         * Si la casilla no esta vacia ni tiene errores de sintaxis
+         * se procede con la busqueda.
+         */
+        // Se obtiene el resultado. 
+        int result = logic.getWordFrecuency(word);
+
+        // Se muestran el resultado de la busqueda. 
+        showResultOfSearch(result);
+
+        // Se setea invisible el label de error.
+        setSearchSintaxErrorLabel(EMPTY, false);
+        
     }
 
     /**
@@ -191,7 +207,7 @@ public class FXMLDocumentController implements Initializable {
 
         // Se limpia la GUI.
         clearGUI();
-
+        
     }
 
     /*
@@ -219,7 +235,7 @@ public class FXMLDocumentController implements Initializable {
 
         // Se pone visible un label que dice frecuencia. 
         this.lbl_frecuency.setVisible(state);
-
+        
     }
 
     /**
@@ -240,8 +256,21 @@ public class FXMLDocumentController implements Initializable {
         this.list_files.getItems().clear();
         for (File file : files) {
             this.list_files.getItems().add(file.getName());
-
+            
         }
+    }
+
+    /**
+     * Setea visible o no el label de error de sintaxis en la busqueda y setea
+     * el texto del mismo.
+     *
+     * @param message - mensaje a mostrar.
+     * @param state - el estado de visibilidad.
+     *
+     */
+    private void setSearchSintaxErrorLabel(String message, boolean state) {
+        this.searchSintaxError.setText(message);
+        this.searchSintaxError.setVisible(state);
     }
 
     //################################# ALERTS.
@@ -253,15 +282,15 @@ public class FXMLDocumentController implements Initializable {
      */
     private boolean alertExistingFile(String fileName) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "¿Desea leer otro archivo?",
+                READ_OTHER_FILE,
                 ButtonType.YES,
                 ButtonType.NO);
-
+        
         alert.setHeaderText("El archivo '" + fileName + "' ya fue leido.");
-
+        
         Optional<ButtonType> result = alert.showAndWait();
         return result.get() == ButtonType.YES;
-
+        
     }
 
     /**
@@ -295,6 +324,9 @@ public class FXMLDocumentController implements Initializable {
 
         // Se limpia la casilla de busqueda. 
         txt_wordToSearch.clear();
-    }
 
+        // Se invisibiliza el label de error de busqueda. 
+        setSearchSintaxErrorLabel(EMPTY, false);
+    }
+    
 }
