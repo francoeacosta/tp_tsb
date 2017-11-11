@@ -29,7 +29,7 @@ import javafx.scene.control.ButtonType;
  *
  * @author estre
  */
-public class FXMLDocumentController implements Initializable {
+public class AnalizadorDePalabrasGUIController implements Initializable {
     
     private final String SEARCH_SINTAX_ERROR = "El texto a buscar debe tener solo caracteres y no debe tener tildes.";
     private final String SEARCH_EMPTY_BOX = "Debe ingresar una palabra para buscar.";
