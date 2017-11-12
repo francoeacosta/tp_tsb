@@ -11,18 +11,18 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 // Imports agregados. 
 import java.io.File;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import javafx.stage.FileChooser;
 import tplogic.TPLogic;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -51,6 +51,8 @@ public class AnalizadorDePalabrasGUIController implements Initializable {
     private TextField txt_wordToSearch;
     @FXML
     private Label searchSintaxError;
+    @FXML
+    private AnchorPane anchorPane;
 
     /*
     ################################# EVENTOS DE GUI.
@@ -118,9 +120,10 @@ public class AnalizadorDePalabrasGUIController implements Initializable {
         FileChooser fc = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fc.getExtensionFilters().add(extFilter);
+        
 
         // Mostrar el selector y crear el archivo seleccionado. 
-        File file = fc.showOpenDialog(null);
+        File file = fc.showOpenDialog((Stage) anchorPane.getScene().getWindow());
         
         // Se chequea si el archivo ya fue leido. 
         if (logic.wasReaded(file)) {
