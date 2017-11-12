@@ -40,9 +40,7 @@ public class FileParser implements Iterable<String>, Closeable {
      */
     public FileParser(String path) throws FileNotFoundException, NullPointerException {
         File file = new File(path);
-        sc = new Scanner(file, "ISO-8859-1");
-        // ([a-z]+[0-9]+|[0-9]+[a-z]+)[a-z0-9]*\b|[^A-Za-z]+
-        //sc.skip("[^A-Za-z]+");
+        sc = new Scanner(file, "ISO-8859-1");        
     }
 
     /**
