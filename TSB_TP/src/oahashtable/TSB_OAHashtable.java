@@ -133,7 +133,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
     /**
      * Indica si una clave dada esta presente. *
      *
-     * @param o - La clave a analizar.
+     * @param key - La clave a analizar.
      * @return - true, si esta presente la clave.
      * @throws ClassCastException - si el tipo de la clave no es compatible con
      * el mapa.
@@ -173,13 +173,6 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
         if (k == null) {
             throw new NullPointerException("Los parametros no pueden ser null.");
-        }
-
-        /**
-         * Si la clave no esta presente, retorna null.
-         */
-        if (!containsKey((K) k)) {
-            return null;
         }
 
         /**
