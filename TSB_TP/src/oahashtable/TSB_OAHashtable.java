@@ -140,18 +140,9 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
      * @throws NullPointerException - si la clave es null.
      */
     @Override
-    public boolean containsKey(Object o) throws ClassCastException, NullPointerException {
+    public boolean containsKey(Object key) throws ClassCastException, NullPointerException {
 
-        if (o == null) {
-            throw new NullPointerException("La clave no puede ser null.");
-        }
-
-        for (K key : keySet()) {
-            if (key.equals(o)) {
-                return true;
-            }
-        }
-        return false;
+        return (this.get((K)key) != null);
     }
 
     /**
